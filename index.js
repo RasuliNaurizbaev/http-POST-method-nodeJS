@@ -18,7 +18,7 @@ const server = http.createServer((req, res) => {
         });
 
         req.on('end', () => {
-            const message = result.toString()
+            const message = result.toString().split('=')[1]; // 0 bosa message oshedi 1 bosa inputdagi "name" {username} oshedi
             res.end(
                 `
                 <p>Email is ${message}</p>
