@@ -1,31 +1,28 @@
 const http = require('http');
 
 const server = http.createServer((req, res) => {
-    const { statusCode } = res;
-    if (req.method === "GET" && statusCode === 200) {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+    if (req.method == "GET") {
+        res.writeHead(200, {"Content-Type": "text/html"});
         res.end(`
-                </h1>Status</h4>
-                <form action="/" method="POST">
-                    <input name="username">
-                    <button type="submit">BTN</button> 
-                </form>
-            `)
-    } else if (req.method === "POST" && statusCode === 200 ) {
-        const result = [];
-        req.on('data', attr => {
-            result.push(Buffer.from(attr))
+            <form action="/" method="POST">
+                <input name="text" placeholder="enter text">
+                <button type="submit">BTN</button>
+            </form>
+        `);
+    } else if (req.method == "POST") {
+        const message = [];
+
+        req.on('data', (data) => {
+            message.push(data); // Push data directly
         });
 
         req.on('end', () => {
-            const message = result.toString().split('=')[1]; // 0 bosa message oshedi 1 bosa inputdagi "name" {username} oshedi
-            res.end(
-                `
-                <p>Email is ${message}</p>
-            `
-            )
-        })
+            const result = Buffer.concat(message).toString().split('=')[1]; // Combine all chunks and convert to string
+            res.end(`You submitted: ${result}`);
+        });
     }
-})
+});
 
-server.listen(5000, console.log("Server is running 5000"));
+server.listen(3000, () => {
+    console.log(`Server is running on port 3000`);
+});
